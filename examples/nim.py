@@ -103,7 +103,8 @@ class NimDriver:
                 v = int(line)
                 return v
             except ValueError:
-                await self._writer.write('Input wasn\'t a valid integer.'.encode())
+                self._writer.write('Input wasn\'t a valid integer.\n'.encode())
+                await self._writer.drain()
 
     async def _fake_progress_bar(self, prompt):
         for i in range(0, 15):
