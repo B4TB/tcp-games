@@ -51,9 +51,7 @@ class NimDriver:
         self._nim = Nim()
 
     async def play(self):
-        while True:
-            should_continue = await self._round()
-            if not should_continue: break
+        while await self._round(): pass
 
     async def _round(self):
         """Ask for a move, do it, and respond with a move of our own."""
