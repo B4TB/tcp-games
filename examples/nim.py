@@ -22,9 +22,14 @@ class Nim:
         unreasonably important to math. I don't know SHIT, ask Tristan."""
         self._piles = [3, 4, 5]
 
+    def move_is_valid(self, pile, amount):
+        return amount > 0 and \
+            pile < len(self._piles) and \
+            self._piles[pile] >= amount
+
     def play(self, pile, amount):
         """Take `amount` objects from the specified `pile`."""
-        assert(self._piles[pile] >= amount)
+        assert(self.move_is_valid(pile, amount))
         self._piles[pile] -= amount
 
     def can_continue(self):
@@ -60,6 +65,10 @@ class NimDriver:
 
         pile, amount = await self._ask_move()
         await self._writer.drain()
+        while not self._nim.move_is_valid(pile, amount):
+            self._writer.write('Not a valid move.\n'.encode())
+            pile, amount = await self._ask_move()
+            await self._writer.drain()
 
         self._nim.play(pile, amount)
 
