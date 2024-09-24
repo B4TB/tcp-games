@@ -11,6 +11,12 @@ import asyncio
 # The computer's moves are determined randomly.
 import random
 
+# We'll run our server on the given host and port. The host needs to
+# be 0.0.0.0 to be accessible from other machines, but the port is
+# arbitrary.
+HOST = '0.0.0.0'
+PORT = 5775
+
 # The first section of code here contains game logic for nim. If you're
 # unfamiliar, the [wikipedia page](https://en.wikipedia.org/wiki/Nim) is a good
 # resource.
@@ -77,7 +83,7 @@ class NimDriver:
         await self._fake_progress_bar('Determining response')
 
         if not self._nim.can_continue():
-            self._writer.write('You won. Congrats.'.encode())
+            self._writer.write('You won. Congrats.\n'.encode())
             await self._writer.drain()
             return False
 
@@ -121,7 +127,7 @@ class NimDriver:
              await asyncio.sleep(0.1)
 
         self._writer.write('\n'.encode())
-        
+
 
 async def main():
     async def cb(reader, writer):
@@ -130,7 +136,12 @@ async def main():
          writer.close()
          await writer.wait_closed()
 
-    server = await asyncio.start_server(cb, host='0.0.0.0', port=12345, start_serving=False) 
+    server = await asyncio.start_server(
+        cb, host=HOST, port=PORT, start_serving=False
+    )
+
+    print(f'Serving on {HOST}:{PORT}')
+
     await server.serve_forever()
 
 if __name__ == '__main__':
