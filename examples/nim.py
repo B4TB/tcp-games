@@ -49,8 +49,9 @@ class Nim:
 
     def __str__(self):
         out = ''
+        char = '*'
         for i, pile_amount in enumerate(self._piles):
-             out += f'\x1b[1m[{i}]\x1b[0m \x1b[33m{'*' * pile_amount}\x1b[0m\n'
+             out += f'\x1b[1m[{i}]\x1b[0m \x1b[33m{char * pile_amount}\x1b[0m\n'
 
         return out
 
