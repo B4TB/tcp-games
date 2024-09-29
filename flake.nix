@@ -50,6 +50,8 @@
             vendorHash = "sha256-cukmtsu303EagzwSIF/ptIfEmO9bzsT0Y1+SOiNa+6M=";
           };
 
+          catlibrary = pkgs.callPackage ./src/catlibrary {};
+
         };
       }) // {
         nixosModules.nim = { pkgs, ... }: {
@@ -89,6 +91,19 @@
           };
 
           networking.firewall.allowedTCPPorts = [ 5173 ];
+        };
+
+        nixosModules.catlibrary = { pkgs, ... }: {
+          systemd.services.images = {
+            description = "cat library";
+            wantedBy = [ "multi-user.target" ];
+            serviceConfig = {
+              Type = "simple";
+              ExecStart = "${self.packages.${pkgs.system}.catlibrary}/bin/cat-library";
+            };
+          };
+
+          networking.firewall.allowedTCPPorts = [ 6868 ];
         };
       };
 }
