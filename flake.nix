@@ -24,20 +24,18 @@
             '';
           };
         };
-
-        nixosModules.nim = {
-          config = {
-            systemd.services.nim = {
-              description = "TCP Games: Nim";
-              wantedBy = [ "multi-user.target" ];
-              serviceConfig = {
-                Type = "simple";
-                ExecStart = "${self.packages.${system}.nim}/bin/nim";
-              };
+      }) // {
+        nixosModules.nim = { nixpkgs, ... }: {
+          systemd.services.nim = {
+            description = "TCP Games: Nim";
+            wantedBy = [ "multi-user.target" ];
+            serviceConfig = {
+              Type = "simple";
+              ExecStart = "${self.packages.${nixpkgs.system}.nim}/bin/nim";
             };
-
-            networking.firewall.allowedTCPPorts = [ 5773 ];
           };
+
+          networking.firewall.allowedTCPPorts = [ 5773 ];
         };
-      });
+      };
 }
