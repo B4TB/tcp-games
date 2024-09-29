@@ -11,6 +11,7 @@
         version = "0.1.0";
       in {
         packages = {
+
           nim = pkgs.stdenv.mkDerivation {
             pname = "nim";
             inherit version;
@@ -40,6 +41,15 @@
               install -Dm755 ./fermi $out/bin/fermi
             '';
           };
+
+          images = pkgs.buildGoModule {
+            pname = "images";
+            inherit version;
+
+            src = ./src/images;
+            vendorHash = "sha256-cukmtsu303EagzwSIF/ptIfEmO9bzsT0Y1+SOiNa+6M=";
+          };
+
         };
       }) // {
         nixosModules.nim = { pkgs, ... }: {
@@ -66,6 +76,19 @@
           };
 
           networking.firewall.allowedTCPPorts = [ 1337 ];
+        };
+
+        nixosModules.images = { pkgs, ... }: {
+          systemd.services.images = {
+            description = "TUI image viewer";
+            wantedBy = [ "multi-user.target" ];
+            serviceConfig = {
+              Type = "simple";
+              ExecStart = "${self.packages.${pkgs.system}.images}/bin/image-server-thing";
+            };
+          };
+
+          networking.firewall.allowedTCPPorts = [ 5173 ];
         };
       };
 }
