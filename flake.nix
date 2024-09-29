@@ -25,13 +25,13 @@
           };
         };
       }) // {
-        nixosModules.nim = { nixpkgs, ... }: {
+        nixosModules.nim = { pkgs, ... }: {
           systemd.services.nim = {
             description = "TCP Games: Nim";
             wantedBy = [ "multi-user.target" ];
             serviceConfig = {
               Type = "simple";
-              ExecStart = "${self.packages.${nixpkgs.system}.nim}/bin/nim";
+              ExecStart = "${self.packages.${pkgs.system}.nim}/bin/nim";
             };
           };
 
