@@ -23,6 +23,23 @@
               install -Dm755 ${./examples/nim.py} $out/bin/nim
             '';
           };
+
+          fermi = pkgs.stdenv.mkDerivation {
+            pname = "fermi";
+            inherit version;
+
+            src = ./src/fermi;
+
+            buildInputs = [ pkgs.ghc ];
+
+            buildPhase = ''
+              ghc -O2 -dynamic fermi.hs -o fermi
+            '';
+
+            installPhase = ''
+              install -Dm755 ./fermi $out/bin/fermi
+            '';
+          };
         };
       }) // {
         nixosModules.nim = { pkgs, ... }: {
@@ -36,6 +53,19 @@
           };
 
           networking.firewall.allowedTCPPorts = [ 5773 ];
+        };
+
+        nixosModules.fermi = { pkgs, ... }: {
+          systemd.services.fermi = {
+            description = "TCP Games: Fermi";
+            wantedBy = [ "multi-user.target" ];
+            serviceConfig = {
+              Type = "simple";
+              ExecStart = "${pkgs.socat}/bin/socat TCP-LISTEN:1337,reuseaddr,fork EXEC:${self.packages.${pkgs.system}.fermi}/bin/fermi";
+            };
+          };
+
+          networking.firewall.allowedTCPPorts = [ 1337 ];
         };
       };
 }
