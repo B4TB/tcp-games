@@ -24,5 +24,20 @@
             '';
           };
         };
+
+        nixosModules.nim = {
+          config = {
+            systemd.services.nim = {
+              description = "TCP Games: Nim";
+              wantedBy = [ "multi-user.target" ];
+              serviceConfig = {
+                Type = "simple";
+                ExecStart = "${self.packages.${system}.nim}/bin/nim";
+              };
+            };
+
+            networking.firewall.allowedTCPPorts = [ 5773 ];
+          };
+        };
       });
 }
