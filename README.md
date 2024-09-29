@@ -1,5 +1,11 @@
 # TCP Games Hackathon
 
+Bunch of silly apps written in roughly three hours --- run them on a
+home server and use them in your terminal with netcat or telnet.
+
+---
+**OLD README:**
+
 I'm not allowed to "advertise" this "event" on non-Reed channels, so
 this README will contain *no information whatsoever* about this
 event. It will, however, describe this repository:
